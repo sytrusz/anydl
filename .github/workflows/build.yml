@@ -3,22 +3,25 @@ name: Build Portable anydl
 on:
   push:
     tags:
-      - 'v*' # Triggers on tags like v1.0.0
-  workflow_dispatch: # Allows manual trigger
+      - 'v*'
+  workflow_dispatch:
 
 jobs:
   build:
     name: Build for ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
+      fail-fast: false
       matrix:
         include:
           - os: windows-latest
             artifact_name: anydl.exe
             bundle_name: anydl-windows.exe
+            sep: ";"
           - os: ubuntu-latest
             artifact_name: anydl
             bundle_name: anydl-linux
+            sep: ":"
 
     steps:
       - name: Checkout Code
@@ -40,16 +43,15 @@ jobs:
           mkdir -p bin
           # Download yt-dlp
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o bin/yt-dlp
-          # Download spotdl (using GitHub API to find latest)
-          SPOTDL_URL=$(curl -s https://api.github.com/repos/spotDL/spotify-downloader/releases/latest | grep "browser_download_url.*linux" | cut -d '"' -f 4)
-          curl -L "$SPOTDL_URL" -o bin/spotdl
+          # Download spotdl (direct link attempt)
+          curl -L https://github.com/spotDL/spotify-downloader/releases/latest/download/spotdl-linux -o bin/spotdl || \
+          curl -L $(curl -s https://api.github.com/repos/spotDL/spotify-downloader/releases/latest | grep "browser_download_url.*linux" | cut -d '"' -f 4) -o bin/spotdl
           # Download static ffmpeg
           curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz
           tar -xf ffmpeg.tar.xz
           cp ffmpeg-*-amd64-static/ffmpeg bin/
-          # Copy scdl from pip installation
-          cp $(which scdl) bin/
           chmod +x bin/*
+          ls -R bin/
 
       - name: Setup Binaries (Windows)
         if: matrix.os == 'windows-latest'
@@ -59,27 +61,23 @@ jobs:
           # Download yt-dlp
           Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "bin/yt-dlp.exe"
           # Download spotdl
-          $SPOTDL_RELEASE = Invoke-RestMethod -Uri "https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
-          $SPOTDL_URL = ($SPOTDL_RELEASE.assets | Where-Object { $_.name -like "*win.exe" }).browser_download_url
-          Invoke-WebRequest -Uri $SPOTDL_URL -OutFile "bin/spotdl.exe"
+          try {
+            Invoke-WebRequest -Uri "https://github.com/spotDL/spotify-downloader/releases/latest/download/spotdl-win.exe" -OutFile "bin/spotdl.exe"
+          } catch {
+            $SPOTDL_RELEASE = Invoke-RestMethod -Uri "https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
+            $SPOTDL_URL = ($SPOTDL_RELEASE.assets | Where-Object { $_.name -like "*win.exe" }).browser_download_url
+            Invoke-WebRequest -Uri $SPOTDL_URL -OutFile "bin/spotdl.exe"
+          }
           # Download ffmpeg essentials
           Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -OutFile "ffmpeg.zip"
           Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg_temp"
           Get-ChildItem -Path "ffmpeg_temp" -Filter "ffmpeg.exe" -Recurse | Copy-Item -Destination "bin/ffmpeg.exe"
-          # Copy scdl (installed via pip)
-          Copy-Item (Get-Command scdl).Source "bin/scdl.exe"
+          ls bin/
 
       - name: Build with PyInstaller
         shell: bash
         run: |
-          # Use ; as separator for Windows, : for Linux
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            SEP=";"
-          else
-            SPOTDL_URL=$(curl -s https://api.github.com/repos/spotDL/spotify-downloader/releases/latest | grep "browser_download_url.*linux" | cut -d '"' -f 4)
-            SEP=":"
-          fi
-          pyinstaller --noconsole --onefile --add-data "bin${SEP}bin" --name anydl main.py
+          pyinstaller --noconsole --onefile --add-data "bin${{ matrix.sep }}bin" --name anydl main.py
 
       - name: Rename & Prepare Artifact
         shell: bash
