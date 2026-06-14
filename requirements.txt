@@ -1,3 +1,4 @@
 flet
 spotdl
 yt-dlp
+scdl

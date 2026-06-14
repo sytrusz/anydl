@@ -35,6 +35,13 @@ async def main_app(page: ft.Page):
             "hint": "Paste YouTube URL or search",
             "color": ft.Colors.RED_600,
             "icon": ft.Icons.VIDEO_LIBRARY
+        },
+        "scdl": {
+            "name": "SoundCloud Downloader",
+            "desc": "SoundCloud to MP3 - Free - All Devices",
+            "hint": "Paste SoundCloud URL (Track or Playlist)",
+            "color": ft.Colors.ORANGE_700,
+            "icon": ft.Icons.CLOUD_DOWNLOAD
         }
     }
     
@@ -224,6 +231,9 @@ async def main_app(page: ft.Page):
                 command.extend(["-x", "--audio-format", "mp3"])
             elif format_dropdown.value == "video":
                 command.extend(["--merge-output-format", "mp4"])
+        elif current_tool_id == "scdl":
+            command.extend(["-l"]) # scdl requires -l for the URL
+            
         command.append(url)
 
         manager.start_download(command, cwd=target_dir)
