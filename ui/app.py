@@ -303,6 +303,15 @@ async def main_app(page: ft.Page):
             header.border = ft.Border.only(bottom=ft.BorderSide(1, ft.Colors.GREY_900))
             theme_btn.icon = ft.Icons.LIGHT_MODE
             logo_dl_text.color = ft.Colors.WHITE
+            
+            # Tool View Colors
+            tool_title.color = ft.Colors.WHITE
+            tool_desc.color = ft.Colors.GREY_400
+            selected_dir_text.color = ft.Colors.GREY_400
+            url_input.color = ft.Colors.BLACK # Keep input text readable in white box
+            back_button.style = ft.ButtonStyle(color=ft.Colors.GREY_400)
+            format_dropdown.color = ft.Colors.WHITE
+
             # Update cards to dark mode
             for card in cards:
                 card.bgcolor = ft.Colors.GREY_900
@@ -316,6 +325,15 @@ async def main_app(page: ft.Page):
             header.border = ft.Border.only(bottom=ft.BorderSide(1, ft.Colors.GREY_200))
             theme_btn.icon = ft.Icons.DARK_MODE
             logo_dl_text.color = ft.Colors.BLACK
+
+            # Tool View Colors
+            tool_title.color = ft.Colors.BLACK
+            tool_desc.color = ft.Colors.GREY_700
+            selected_dir_text.color = ft.Colors.GREY_600
+            url_input.color = ft.Colors.BLACK
+            back_button.style = ft.ButtonStyle(color=ft.Colors.GREY_700)
+            format_dropdown.color = ft.Colors.BLACK
+
             # Update cards to light mode
             for card in cards:
                 card.bgcolor = ft.Colors.WHITE
@@ -357,18 +375,20 @@ async def main_app(page: ft.Page):
     # -------------------------------------------------------------
     # Tool View
     # -------------------------------------------------------------
+    back_button = ft.TextButton(
+        "Back to Home", 
+        icon=ft.Icons.ARROW_BACK,
+        on_click=lambda _: show_home(),
+        style=ft.ButtonStyle(color=ft.Colors.GREY_700)
+    )
+
     tool_view = ft.Container(
         visible=False,
         expand=True,
         content=ft.Column(
             [
                 ft.Container(
-                    content=ft.TextButton(
-                        "Back to Home", 
-                        icon=ft.Icons.ARROW_BACK,
-                        on_click=lambda _: show_home(),
-                        style=ft.ButtonStyle(color=ft.Colors.GREY_700)
-                    ),
+                    content=back_button,
                     alignment=ft.Alignment(-1, -1),
                     padding=ft.Padding.only(left=20, top=20)
                 ),
