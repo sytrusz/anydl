@@ -19,6 +19,10 @@ Don't want to install Python? Download the latest pre-built version for your ope
 - 🐧 [**Download for Linux (Binary)**](https://github.com/sytrusz/anydl/releases/latest)
 - 🍎 [**Download for macOS (Binary)**](https://github.com/sytrusz/anydl/releases/latest)
 
+> **Note for Linux/macOS:** After downloading, you must make the file executable by running `chmod +x anydl-linux` (or `anydl-macos`) in your terminal.
+>
+> **Note for macOS:** If you see a "developer cannot be verified" warning, **Right-click** the file and select **Open**, or go to **System Settings > Privacy & Security** and click **Open Anyway**.
+
 ---
 
 ## Powered By
