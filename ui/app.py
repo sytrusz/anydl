@@ -42,6 +42,20 @@ async def main_app(page: ft.Page):
             "hint": "Paste SoundCloud URL (Track or Playlist)",
             "color": ft.Colors.ORANGE_700,
             "icon": ft.Icons.CLOUD_DOWNLOAD
+        },
+        "tiktok": {
+            "name": "TikTok Downloader",
+            "desc": "TikTok Videos - Free - No Watermark",
+            "hint": "Paste TikTok URL",
+            "color": ft.Colors.CYAN_400,
+            "icon": ft.Icons.MUSIC_VIDEO
+        },
+        "facebook": {
+            "name": "Facebook Downloader",
+            "desc": "Facebook Videos/Reels - Free - All Devices",
+            "hint": "Paste Facebook Video URL",
+            "color": ft.Colors.BLUE_800,
+            "icon": ft.Icons.FACEBOOK
         }
     }
     
@@ -225,13 +239,18 @@ async def main_app(page: ft.Page):
         format_dropdown.disabled = True
         page.update()
 
-        command = [current_tool_id]
-        if current_tool_id == "yt-dlp":
+        # Map UI tool IDs to actual CLI engines
+        engine = current_tool_id
+        if current_tool_id in ["tiktok", "facebook"]:
+            engine = "yt-dlp"
+
+        command = [engine]
+        if engine == "yt-dlp":
             if format_dropdown.value == "audio":
                 command.extend(["-x", "--audio-format", "mp3"])
             elif format_dropdown.value == "video":
                 command.extend(["--merge-output-format", "mp4"])
-        elif current_tool_id == "scdl":
+        elif engine == "scdl":
             command.extend(["-l"]) # scdl requires -l for the URL
             
         command.append(url)
@@ -272,7 +291,8 @@ async def main_app(page: ft.Page):
         search_border.border = ft.Border.all(2, t["color"])
         download_btn_container.bgcolor = t["color"]
         
-        if tool_id == "yt-dlp":
+        # Tools using yt-dlp engine support format selection
+        if tool_id in ["yt-dlp", "tiktok", "facebook"]:
             format_dropdown.visible = True
             format_dropdown.disabled = False
         else:
@@ -351,10 +371,19 @@ async def main_app(page: ft.Page):
         visible=True,
         expand=True,
         content=ft.Column([
-            ft.Container(height=80),
+            ft.Container(height=40),
             ft.Text("What would you like to download?", size=32, weight=ft.FontWeight.W_500, color=ft.Colors.BLACK),
             ft.Container(height=40),
-            ft.Row(cards, alignment=ft.MainAxisAlignment.CENTER, spacing=40)
+            ft.GridView(
+                expand=True,
+                runs_count=3,
+                max_extent=300,
+                child_aspect_ratio=1.3,
+                spacing=20,
+                run_spacing=20,
+                controls=cards,
+                padding=ft.Padding.only(left=40, right=40)
+            )
         ], horizontal_alignment=ft.CrossAxisAlignment.CENTER)
     )
 
