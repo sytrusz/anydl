@@ -24,49 +24,49 @@ async def main_app(page: ft.Page):
     TOOLS = {
         "spotdl": {
             "name": "Spotify Downloader",
-            "desc": "Spotify to MP3 Downloader - Free - All Devices",
+            "desc": "Spotify track/playlist to MP3",
             "hint": "Paste Spotify URL or search",
             "color": "#21c25e",
             "icon": ft.Icons.LIBRARY_MUSIC
         },
         "yt-dlp": {
             "name": "YouTube Downloader",
-            "desc": "YouTube to Video/Audio - Free - All Devices",
+            "desc": "YouTube to Video/Audio",
             "hint": "Paste YouTube URL or search",
             "color": ft.Colors.RED_600,
             "icon": ft.Icons.VIDEO_LIBRARY
         },
         "scdl": {
             "name": "SoundCloud Downloader",
-            "desc": "SoundCloud to MP3 - Free - All Devices",
+            "desc": "SoundCloud to MP3",
             "hint": "Paste SoundCloud URL (Track or Playlist)",
             "color": ft.Colors.ORANGE_700,
             "icon": ft.Icons.CLOUD_DOWNLOAD
         },
         "tiktok": {
             "name": "TikTok Downloader",
-            "desc": "TikTok Videos - Free - No Watermark",
+            "desc": "TikTok Video to MP4",
             "hint": "Paste TikTok URL",
             "color": ft.Colors.CYAN_400,
             "icon": ft.Icons.MUSIC_VIDEO
         },
         "facebook": {
             "name": "Facebook Downloader",
-            "desc": "Facebook Videos/Reels - Free - All Devices",
+            "desc": "Facebook Reels to Video/Audio",
             "hint": "Paste Facebook Video URL",
             "color": ft.Colors.BLUE_800,
             "icon": ft.Icons.FACEBOOK
         },
         "instagram": {
             "name": "Instagram Reels",
-            "desc": "Instagram Reels & Videos - Free - High Quality",
+            "desc": "Instagram Reels to Video/Audio ",
             "hint": "Paste Instagram URL",
             "color": ft.Colors.PINK_500,
             "icon": ft.Icons.CAMERA_ALT
         },
         "twitter": {
             "name": "X (Twitter)",
-            "desc": "X Videos & GIFs - Free - All Devices",
+            "desc": "X to Video/Audio",
             "hint": "Paste X/Twitter URL",
             "color": ft.Colors.BLACK,
             "icon": ft.Icons.WEB
@@ -294,6 +294,23 @@ async def main_app(page: ft.Page):
         home_view.visible = True
         page.update()
 
+    def toggle_theme(e):
+        if page.theme_mode == ft.ThemeMode.LIGHT:
+            page.theme_mode = ft.ThemeMode.DARK
+            page.bgcolor = ft.Colors.BLACK
+            theme_btn.icon = ft.Icons.LIGHT_MODE
+        else:
+            page.theme_mode = ft.ThemeMode.LIGHT
+            page.bgcolor = ft.Colors.GREY_50
+            theme_btn.icon = ft.Icons.DARK_MODE
+        page.update()
+
+    theme_btn = ft.IconButton(
+        icon=ft.Icons.DARK_MODE,
+        tooltip="Toggle Theme",
+        on_click=toggle_theme
+    )
+
     def show_tool(tool_id):
         nonlocal current_tool_id
         current_tool_id = tool_id
@@ -402,27 +419,40 @@ async def main_app(page: ft.Page):
     )
 
     # -------------------------------------------------------------
-    # Header & Assembly
+    # Header, Footer & Assembly
     # -------------------------------------------------------------
     header = ft.Container(
         content=ft.Row([
-            ft.Text(spans=[
-                ft.TextSpan("ANY", style=ft.TextStyle(color="#21c25e", weight=ft.FontWeight.BOLD, size=22)),
-                ft.TextSpan("DL", style=ft.TextStyle(color=ft.Colors.BLACK, weight=ft.FontWeight.BOLD, size=22)),
-            ])
-        ]),
-        padding=ft.Padding.only(left=30, top=15, bottom=15),
+            ft.Row([
+                ft.Text(spans=[
+                    ft.TextSpan("ANY", style=ft.TextStyle(color="#21c25e", weight=ft.FontWeight.BOLD, size=22)),
+                    ft.TextSpan("DL", style=ft.TextStyle(color=ft.Colors.BLACK, weight=ft.FontWeight.BOLD, size=22)),
+                ])
+            ], on_click=lambda _: show_home()),
+            theme_btn
+        ], alignment=ft.MainAxisAlignment.SPACE_BETWEEN),
+        padding=ft.Padding.only(left=30, right=30, top=10, bottom=10),
         bgcolor=ft.Colors.WHITE,
-        border=ft.Border.only(bottom=ft.BorderSide(1, ft.Colors.GREY_200)),
-        on_click=lambda _: show_home(),
-        ink=True
+        border=ft.Border.only(bottom=ft.BorderSide(1, ft.Colors.GREY_200))
+    )
+
+    footer = ft.Container(
+        content=ft.Row([
+            ft.Text("Built with ❤️ by ", size=12, color=ft.Colors.GREY_600),
+            ft.TextButton(
+                "sytrusz/anydl",
+                url="https://github.com/sytrusz/anydl",
+                style=ft.ButtonStyle(color="#21c25e", padding=ft.Padding.all(0))
+            )
+        ], alignment=ft.MainAxisAlignment.CENTER),
+        padding=ft.Padding.only(bottom=20)
     )
 
     page.add(
         ft.Column([
             header,
-            home_view,
-            tool_view
+            ft.Container(content=ft.Column([home_view, tool_view], expand=True), expand=True),
+            footer
         ], expand=True, spacing=0)
     )
 

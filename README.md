@@ -10,31 +10,28 @@
 
 **anydl** is an open-source Python desktop application built with [Flet](https://flet.dev). It serves as a user-friendly graphical interface (GUI) that orchestrates several industry-standard command-line download engines.
 
-If you don't like using the terminal but want the raw power and speed of the best open-source tools, this app is for you!
-
 ---
 
 ## 🛠️ Powered By
 
 This project is built upon the incredible work of the following repositories:
 
-- [**yt-dlp**](https://github.com/yt-dlp/yt-dlp): The premier engine used for YouTube, TikTok, Facebook, X (Twitter), and Instagram downloads.
-- [**spotDL**](https://github.com/spotDL/spotify-downloader): The engine used for high-fidelity Spotify track and playlist downloads.
+- [**yt-dlp**](https://github.com/yt-dlp/yt-dlp): The engine used for YouTube, TikTok, Facebook, X (Twitter), and Instagram downloads.
+- [**spotDL**](https://github.com/spotDL/spotify-downloader): The engine used for Spotify track and playlist downloads.
 - [**scdl**](https://github.com/flyingrub/scdl): The engine used for SoundCloud audio downloads.
 
 ---
 
-## ✨ Features
+## Features
 
 - 🎥 **Video Downloads**: Download the "Best Video" (automatically merged to MP4) from YouTube, TikTok, Facebook, Instagram, and X.
-- 🎵 **Music Downloads**: High-quality MP3 downloads from Spotify and SoundCloud with full metadata.
+- 🎵 **Music Downloads**: High-quality MP3 downloads from Spotify and SoundCloud.
 - 📊 **Real-Time Progress**: Watch your downloads complete with a live percentage progress bar.
 - 📂 **Custom Save Locations**: Easily choose where your files go using your operating system's native folder picker.
-- 🎨 **Modern UI**: A clean, distraction-free interface inspired by modern search engines.
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
@@ -83,7 +80,7 @@ Before using the app, you must have the following installed on your system:
 
 ---
 
-## ❤️ Credits & Acknowledgements
+## Credits & Acknowledgements
 
 Massive thanks to the open-source community:
 - [**Flet**](https://flet.dev/): The UI framework.
@@ -91,5 +88,5 @@ Massive thanks to the open-source community:
 - [**spotDL**](https://github.com/spotDL/spotify-downloader): The Spotify engine.
 - [**scdl**](https://github.com/flyingrub/scdl): The SoundCloud engine.
 
-## 📄 License
+## License
 This project is open-source. Feel free to fork, modify, and distribute it!
