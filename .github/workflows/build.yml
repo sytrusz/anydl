@@ -9,6 +9,10 @@ on:
 permissions:
   contents: write
 
+env:
+  # UPDATE THIS VERSION IF THE BUILD FAILS
+  SPOTDL_VERSION: "4.5.0" 
+
 jobs:
   build:
     name: Build for ${{ matrix.os }}
@@ -42,17 +46,15 @@ jobs:
 
       - name: Setup Binaries (Linux)
         if: matrix.os == 'ubuntu-latest'
-        env:
-          GH_TOKEN: ${{ github.token }}
         run: |
           mkdir -p bin
-          # Download yt-dlp
-          gh release download --repo yt-dlp/yt-dlp --pattern "yt-dlp" --output bin/yt-dlp
+          # yt-dlp
+          curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o bin/yt-dlp
           
-          # Download spotdl
-          gh release download --repo spotDL/spotify-downloader --pattern "*linux" --output bin/spotdl
+          # spotdl
+          curl -L "https://github.com/spotDL/spotify-downloader/releases/download/v${{ env.SPOTDL_VERSION }}/spotdl-${{ env.SPOTDL_VERSION }}-linux" -o bin/spotdl
           
-          # Download ffmpeg
+          # ffmpeg
           curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz
           tar -xf ffmpeg.tar.xz
           cp ffmpeg-*-amd64-static/ffmpeg bin/
@@ -62,18 +64,16 @@ jobs:
 
       - name: Setup Binaries (Windows)
         if: matrix.os == 'windows-latest'
-        env:
-          GH_TOKEN: ${{ github.token }}
         shell: bash
         run: |
           mkdir -p bin
-          # Download yt-dlp
-          gh release download --repo yt-dlp/yt-dlp --pattern "yt-dlp.exe" --output bin/yt-dlp.exe
+          # yt-dlp
+          curl -L "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -o bin/yt-dlp.exe
           
-          # Download spotdl
-          gh release download --repo spotDL/spotify-downloader --pattern "*win.exe" --output bin/spotdl.exe
+          # spotdl
+          curl -L "https://github.com/spotDL/spotify-downloader/releases/download/v${{ env.SPOTDL_VERSION }}/spotdl-${{ env.SPOTDL_VERSION }}-win.exe" -o bin/spotdl.exe
           
-          # Download ffmpeg
+          # ffmpeg
           curl -L "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -o ffmpeg.zip
           unzip ffmpeg.zip
           cp ffmpeg-*-essentials_build/bin/ffmpeg.exe bin/
