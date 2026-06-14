@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write # Essential for creating releases and uploading files
+  contents: write
 
 jobs:
   build:
@@ -44,15 +44,12 @@ jobs:
         if: matrix.os == 'ubuntu-latest'
         run: |
           mkdir -p bin
-          # Download yt-dlp
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o bin/yt-dlp
           
-          # Download spotdl (Improved logic)
-          SPOTDL_API="https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
-          SPOTDL_URL=$(curl -s $SPOTDL_API | grep "browser_download_url" | grep "linux" | head -n 1 | cut -d '"' -f 4)
-          curl -L "$SPOTDL_URL" -o bin/spotdl
+          # Attempt direct download, fallback to API search
+          curl -L https://github.com/spotDL/spotify-downloader/releases/latest/download/spotdl-linux -o bin/spotdl || \
+          curl -L $(curl -s https://api.github.com/repos/spotDL/spotify-downloader/releases/latest | grep "browser_download_url" | grep "linux" | head -n 1 | cut -d '"' -f 4) -o bin/spotdl
           
-          # Download static ffmpeg
           curl -L https://johnvansickle.com/ffmpeg/releases/ffmpeg-release-amd64-static.tar.xz -o ffmpeg.tar.xz
           tar -xf ffmpeg.tar.xz
           cp ffmpeg-*-amd64-static/ffmpeg bin/
@@ -64,17 +61,21 @@ jobs:
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path bin
-          # Download yt-dlp
           Invoke-WebRequest -Uri "https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp.exe" -OutFile "bin/yt-dlp.exe"
           
-          # Download spotdl (Improved logic)
-          $api_url = "https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
-          $release = Invoke-RestMethod -Uri $api_url
-          $asset = $release.assets | Where-Object { $_.name -match "win\.exe$" } | Select-Object -First 1
-          if ($null -eq $asset) { throw "Could not find spotdl windows asset" }
-          Invoke-WebRequest -Uri $asset.browser_download_url -OutFile "bin/spotdl.exe"
+          # Simplified spotdl download
+          try {
+            $api_url = "https://api.github.com/repos/spotDL/spotify-downloader/releases/latest"
+            $release = Invoke-RestMethod -Uri $api_url
+            $asset = $release.assets | Where-Object { $_.name -like "*win.exe" } | Select-Object -First 1
+            $download_url = $asset.browser_download_url
+            Write-Host "Downloading spotdl from: $download_url"
+            Invoke-WebRequest -Uri $download_url -OutFile "bin/spotdl.exe"
+          } catch {
+            Write-Host "API lookup failed, trying direct fallback link"
+            Invoke-WebRequest -Uri "https://github.com/spotDL/spotify-downloader/releases/latest/download/spotdl-win.exe" -OutFile "bin/spotdl.exe"
+          }
           
-          # Download ffmpeg essentials
           Invoke-WebRequest -Uri "https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip" -OutFile "ffmpeg.zip"
           Expand-Archive -Path "ffmpeg.zip" -DestinationPath "ffmpeg_temp"
           Get-ChildItem -Path "ffmpeg_temp" -Filter "ffmpeg.exe" -Recurse | Copy-Item -Destination "bin/ffmpeg.exe"
