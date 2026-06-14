@@ -22,16 +22,22 @@ jobs:
         include:
           - os: windows-latest
             artifact_name: anydl.exe
-            bundle_name: anydl-windows.exe
+            bundle_name: anydl-windows
             sep: ";"
-          - os: ubuntu-latest
+            zip_cmd: "powershell Compress-Archive -Path dist/anydl/* -DestinationPath anydl-windows.zip"
+            zip_file: "anydl-windows.zip"
+          - os: ubuntu-20.04
             artifact_name: anydl
             bundle_name: anydl-linux
             sep: ":"
+            zip_cmd: "zip -r anydl-linux.zip dist/anydl/*"
+            zip_file: "anydl-linux.zip"
           - os: macos-latest
             artifact_name: anydl
             bundle_name: anydl-macos
             sep: ":"
+            zip_cmd: "zip -r anydl-macos.zip dist/anydl/*"
+            zip_file: "anydl-macos.zip"
 
     steps:
       - name: Checkout Code
@@ -48,7 +54,7 @@ jobs:
           pip install pyinstaller
 
       - name: Setup Binaries (Linux)
-        if: matrix.os == 'ubuntu-latest'
+        if: matrix.os == 'ubuntu-20.04'
         run: |
           mkdir -p bin
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o bin/yt-dlp
@@ -73,11 +79,8 @@ jobs:
         if: matrix.os == 'macos-latest'
         run: |
           mkdir -p bin
-          # Download yt-dlp for Mac
           curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp_macos -o bin/yt-dlp
-          # Download spotdl for Mac
           curl -L "https://github.com/spotDL/spotify-downloader/releases/download/v${{ env.SPOTDL_VERSION }}/spotdl-${{ env.SPOTDL_VERSION }}-macos" -o bin/spotdl
-          # Download ffmpeg for Mac
           curl -L https://evermeet.cx/ffmpeg/getrelease/ffmpeg/zip -o ffmpeg.zip
           unzip ffmpeg.zip -d bin/
           chmod +x bin/*
@@ -85,17 +88,18 @@ jobs:
       - name: Build with PyInstaller
         shell: bash
         run: |
-          pyinstaller --noconsole --onefile --add-data "bin${{ matrix.sep }}bin" --name anydl main.py
+          # Use --onedir instead of --onefile
+          pyinstaller --noconsole --onedir --add-data "bin${{ matrix.sep }}bin" --name anydl main.py
 
-      - name: Rename Artifact
+      - name: Compress into ZIP
         shell: bash
         run: |
-          mv dist/${{ matrix.artifact_name }} dist/${{ matrix.bundle_name }}
+          ${{ matrix.zip_cmd }}
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: dist/${{ matrix.bundle_name }}
+          files: ${{ matrix.zip_file }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
