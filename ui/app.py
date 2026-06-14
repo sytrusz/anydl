@@ -298,11 +298,29 @@ async def main_app(page: ft.Page):
         if page.theme_mode == ft.ThemeMode.LIGHT:
             page.theme_mode = ft.ThemeMode.DARK
             page.bgcolor = ft.Colors.BLACK
+            header.bgcolor = ft.Colors.SURFACE_CONTAINER_LOW
+            footer.bgcolor = ft.Colors.BLACK
+            header.border = ft.Border.only(bottom=ft.BorderSide(1, ft.Colors.GREY_900))
             theme_btn.icon = ft.Icons.LIGHT_MODE
+            logo_dl_text.color = ft.Colors.WHITE
+            # Update cards to dark mode
+            for card in cards:
+                card.bgcolor = ft.Colors.GREY_900
+                card.border = ft.Border.all(1, ft.Colors.GREY_800)
+                card.content.controls[2].color = ft.Colors.WHITE # Name text
         else:
             page.theme_mode = ft.ThemeMode.LIGHT
             page.bgcolor = ft.Colors.GREY_50
+            header.bgcolor = ft.Colors.WHITE
+            footer.bgcolor = ft.Colors.GREY_50
+            header.border = ft.Border.only(bottom=ft.BorderSide(1, ft.Colors.GREY_200))
             theme_btn.icon = ft.Icons.DARK_MODE
+            logo_dl_text.color = ft.Colors.BLACK
+            # Update cards to light mode
+            for card in cards:
+                card.bgcolor = ft.Colors.WHITE
+                card.border = ft.Border.all(1, ft.Colors.GREY_200)
+                card.content.controls[2].color = ft.Colors.BLACK # Name text
         page.update()
 
     theme_btn = ft.IconButton(
@@ -421,13 +439,15 @@ async def main_app(page: ft.Page):
     # -------------------------------------------------------------
     # Header, Footer & Assembly
     # -------------------------------------------------------------
+    logo_dl_text = ft.TextSpan("DL", style=ft.TextStyle(color=ft.Colors.BLACK, weight=ft.FontWeight.BOLD, size=22))
+    
     header = ft.Container(
         content=ft.Row([
             ft.Container(
                 content=ft.Row([
                     ft.Text(spans=[
                         ft.TextSpan("ANY", style=ft.TextStyle(color="#21c25e", weight=ft.FontWeight.BOLD, size=22)),
-                        ft.TextSpan("DL", style=ft.TextStyle(color=ft.Colors.BLACK, weight=ft.FontWeight.BOLD, size=22)),
+                        logo_dl_text,
                     ])
                 ]),
                 on_click=lambda _: show_home()
