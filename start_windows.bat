@@ -48,6 +48,7 @@ if %errorlevel% neq 0 (
         echo [INFO] Setting up pip ^(Python Package Manager^)...
         REM Enable 'import site' so pip works in the embeddable Python
         powershell -Command "(Get-Content '%PYTHON_DIR%\python311._pth') -replace '#import site', 'import site' | Set-Content '%PYTHON_DIR%\python311._pth'"
+        echo ..\..>> "%PYTHON_DIR%\python311._pth"
         
         curl -L -o "%PYTHON_DIR%\get-pip.py" "https://bootstrap.pypa.io/get-pip.py"
         "%PYTHON_DIR%\python.exe" "%PYTHON_DIR%\get-pip.py" --no-warn-script-location
