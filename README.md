@@ -11,13 +11,36 @@
 
 ---
 
-## Powered By
+## 📌 Quick Start (Installation & Running)
 
-This project is built upon the incredible work of the following repositories:
+Running **anydl** as simple as possible. It runs locally as a fast, responsive web application directly in your browser.
 
-- [**yt-dlp**](https://github.com/yt-dlp/yt-dlp): The engine used for YouTube, TikTok, Facebook, X (Twitter), and Instagram downloads.
-- [**spotDL**](https://github.com/spotDL/spotify-downloader): The engine used for Spotify track and playlist downloads.
-- [**scdl**](https://github.com/flyingrub/scdl): The engine used for SoundCloud audio downloads.
+### 1. Prerequisites
+Before using the app, you **must** have the following installed on your system:
+- **Python 3.8 or newer**: [Download Python here](https://www.python.org/downloads/). *(Make sure to check "Add Python to PATH" during installation)*
+- **FFmpeg**: Required to convert video and audio formats.
+  - **Windows**: Download from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) or install via winget: `winget install ffmpeg`
+  - **macOS**: Install via Homebrew: `brew install ffmpeg`
+  - **Linux**: Install via your package manager (e.g., `sudo apt install ffmpeg` or `sudo dnf install ffmpeg`)
+
+### 2. Download and Run
+1. **Download the Repository:**
+   Click the green **"Code"** button at the top and select **"Download ZIP"**, then extract it. *(Or clone via terminal: `git clone https://github.com/sytrusz/anydl.git`)*
+
+2. **Launch the Application:**
+   Open the extracted folder and run the startup script for your operating system:
+   - 🪟 **Windows:** Double-click the `start_windows.bat` file.
+   - 🍎 **macOS / 🐧 Linux:** Run the `start_linux.sh` script in your terminal (`./start_linux.sh`).
+
+*That's it! The script will automatically set everything up and launch the app in your default web browser.*
+
+---
+
+## How to Use
+
+1. **Select your tool:** Click one of the cards (Spotify, YouTube, TikTok, etc.) on the home screen.
+2. **Choose a folder:** Click the folder icon at the bottom to set your download directory.
+3. **Download:** Paste your URL and click **Download**.
 
 ---
 
@@ -31,43 +54,13 @@ This project is built upon the incredible work of the following repositories:
 
 ---
 
-## Getting Started
+## Powered By
 
-### Prerequisites
+This project is built upon the incredible work of the following repositories:
 
-Before using the app, you must have the following installed on your system:
-1. **Python 3.8 or newer**: [Download Python here](https://www.python.org/downloads/).
-2. **FFmpeg**: This is required by the underlying tools to convert video and audio formats.
-   - **Windows**: Download from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) or install via winget: `winget install ffmpeg`
-   - **macOS**: Install via Homebrew: `brew install ffmpeg`
-   - **Linux**: Install via your package manager (e.g., `sudo apt install ffmpeg` or `sudo dnf install ffmpeg`)
-
-### Installation & Running
-
-1. **Clone or Download the Repository:**
-   ```bash
-   git clone https://github.com/sytrusz/anydl.git
-   cd anydl
-   ```
-
-2. **Launch the Application:**
-   Instead of a traditional executable, **anydl** runs locally as a fast, responsive web application directly in your browser. Our startup scripts handle all the setup (creating the virtual environment and installing dependencies) automatically!
-
-   - **Windows:** Double-click the `start_windows.bat` file.
-   - **Linux / macOS:** Run the `start_linux.sh` script in your terminal:
-     ```bash
-     ./start_linux.sh
-     ```
-
-   *The script will automatically set everything up and launch the app in your default web browser.*
-
----
-
-## How to Use
-
-1. **Select your tool:** Click one of the cards (Spotify, YouTube, TikTok, etc.) on the home screen.
-2. **Choose a folder:** Click the folder icon at the bottom to set your download directory.
-3. **Download:** Paste your URL and click **Download**.
+- [**yt-dlp**](https://github.com/yt-dlp/yt-dlp): The engine used for YouTube, TikTok, Facebook, X (Twitter), and Instagram downloads.
+- [**spotDL**](https://github.com/spotDL/spotify-downloader): The engine used for Spotify track and playlist downloads.
+- [**scdl**](https://github.com/flyingrub/scdl): The engine used for SoundCloud audio downloads.
 
 ---
 
