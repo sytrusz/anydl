@@ -16,10 +16,13 @@
 Running **anydl** as simple as possible. It runs locally as a fast, responsive web application directly in your browser.
 
 ### 1. Prerequisites
-Before using the app, you **must** have the following installed on your system:
-- **Python 3.8 or newer**: [Download Python here](https://www.python.org/downloads/). *(Make sure to check "Add Python to PATH" during installation)*
+**🪟 For Windows Users:**
+You don't need to install anything! The `start_windows.bat` script will automatically download and set up a portable version of Python and FFmpeg for you if they are missing from your system.
+
+**🍎 macOS / 🐧 Linux Users:**
+Before using the app, you must install the following on your system:
+- **Python 3.8 or newer**: Pre-installed on most Linux distros. Mac users can [download it here](https://www.python.org/downloads/).
 - **FFmpeg**: Required to convert video and audio formats.
-  - **Windows**: Download from [gyan.dev](https://www.gyan.dev/ffmpeg/builds/) or install via winget: `winget install ffmpeg`
   - **macOS**: Install via Homebrew: `brew install ffmpeg`
   - **Linux**: Install via your package manager (e.g., `sudo apt install ffmpeg` or `sudo dnf install ffmpeg`)
 
